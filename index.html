@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offer and Postback Setup - IREV</title>
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #3b82f6;
+      --bg-light: #f9fafb;
+      --bg-white: #ffffff;
+      --border-color: #e5e7eb;
+      --text-dark: #111827;
+      --text-light: #6b7280;
+      --success-color: #16a34a;
+      --error-color: #dc2626;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+    }
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: var(--bg-white);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    h2 {
+      color: var(--primary-color);
+      margin-top: 2rem;
+    }
+    pre {
+      background-color: #f3f4f6;
+      padding: 1rem;
+      border-left: 4px solid var(--secondary-color);
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    a {
+      color: var(--secondary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    ul {
+      padding-left: 1.25rem;
+    }
+    .test-box {
+      background-color: #eff6ff;
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
+    .test-box label,
+    .test-box strong {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .test-box input {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      font-size: 1rem;
+    }
+    .test-box button {
+      margin-top: 0.75rem;
+      padding: 0.6rem 1.25rem;
+      background-color: var(--secondary-color);
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .test-box button:hover {
+      background-color: #2563eb;
+    }
+    .result {
+      margin-top: 0.75rem;
+      font-weight: bold;
+    }
+    .result.success {
+      color: var(--success-color);
+    }
+    .result.error {
+      color: var(--error-color);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tutorial: Offer and Postback Setup in IREV</h1>
+  </header>
+  <main>
+    <h2>🌟 Purpose</h2>
+    <p>This guide will teach you how to:</p>
+    <ul>
+      <li>Create offers in IREV</li>
+      <li>Configure tracking links with <code>{hash}</code></li>
+      <li>Ensure postbacks return the tracking hash properly</li>
+    </ul>
+
+    <h2>✅ 1. Creating offers in IREV</h2>
+    <p>Follow this official tutorial to create offers:</p>
+    <p><a href="https://support.irev.com/en/articles/1825922" target="_blank">How to create offers in IREV</a></p>
+
+    <h2>🧩 2. Find out the tracking parameter</h2>
+    <p>Ask the casino which parameter they use for click tracking. Common ones include <code>afp</code>, <code>click_id</code>, or <code>visitor_id</code>.</p>
+    <p><strong>Suggested message to send:</strong></p>
+    <pre>Hello! Could you tell me which parameter you use to track clicks on your offer URLs? (e.g., afp, click_id, visitor_id...)</pre>
+    <div class="test-box">
+      <label for="paramInput">Enter the tracking parameter:</label>
+      <input type="text" id="paramInput" placeholder="e.g., afp, click_id, visitor_id...">
+      <button onclick="saveParam()">Save</button>
+      <div class="result" id="paramConfirm"></div>
+    </div>
+
+    <h2>🔗 3. Add the tracking parameter with <code>{hash}</code></h2>
+    <p>Append the parameter you confirmed followed by <code>={hash}</code> to the offer URL.</p>
+    <pre>https://tracking.example.com/click/?affid=123&amp;offerid=456&amp;afp={hash}</pre>
+    <div class="test-box">
+      <strong>Test your offer URL:</strong>
+      <input type="text" id="offerInput" placeholder="Paste your URL here">
+      <button onclick="testOfferURL()">Check</button>
+      <div class="result" id="offerResult"></div>
+    </div>
+
+    <h2>🚀 4. Locate your Postback URLs</h2>
+    <p>Visit the goals page in IREV to view the available postbacks:</p>
+    <p><a href="https://dashboard.example-irev.com/settings/crm-goal-types" target="_blank">View Postbacks in IREV</a></p>
+
+    <h2>🔄 5. Return the hash in the postback</h2>
+    <p>Make sure to send the hash value back to IREV:</p>
+    <pre>https://dashboard.example-irev.com/backend/api/v3/goal-type-fire/1?hash={afp}</pre>
+    <div class="test-box">
+      <strong>Test your postback URL:</strong>
+      <input type="text" id="postbackInput" placeholder="Paste your URL here">
+      <button onclick="testPostbackURL()">Check</button>
+      <div class="result" id="postbackResult"></div>
+    </div>
+
+    <h2>📅 Final Tips</h2>
+    <ul>
+      <li>Double-check with the casino which parameter they return in the postback.</li>
+      <li>Test links to confirm events show up in the IREV dashboard.</li>
+      <li>Use test values to validate your integration.</li>
+    </ul>
+
+    <div class="test-box">
+      <strong>Validation Checklist:</strong>
+      <ul>
+        <li>[☑] Offer link includes <code>{hash}</code></li>
+        <li>[☑] Same parameter used in offer and postback</li>
+        <li>[☑] Postback contains <code>hash={parameter}</code></li>
+        <li>[☑] Event appears in IREV dashboard after testing</li>
+      </ul>
+    </div>
+  </main>
+  <script>
+    let savedParam = 'afp';
+
+    function saveParam() {
+      const input = document.getElementById('paramInput').value.trim();
+      const result = document.getElementById('paramConfirm');
+      if (input) {
+        savedParam = input;
+        result.textContent = `✅ Parameter "${savedParam}" saved successfully.`;
+        result.className = 'result success';
+      } else {
+        result.textContent = '❌ Please enter a valid parameter before saving.';
+        result.className = 'result error';
+      }
+    }
+
+    function getTrackingParam() {
+      return savedParam;
+    }
+
+    function testOfferURL() {
+      const input = document.getElementById('offerInput').value;
+      const param = getTrackingParam();
+      const result = document.getElementById('offerResult');
+      const regex = new RegExp(`[?&]${param}={(hash)}`);
+      if (regex.test(input)) {
+        result.textContent = '✅ Valid URL!';
+        result.className = 'result success';
+      } else {
+        result.textContent = `❌ Invalid URL. Make sure it includes ${param}={hash}.`;
+        result.className = 'result error';
+      }
+    }
+
+    function testPostbackURL() {
+      const input = document.getElementById('postbackInput').value;
+      const param = getTrackingParam();
+      const result = document.getElementById('postbackResult');
+      const regex = new RegExp(`[?&]hash={(?:${param})}`);
+      if (regex.test(input)) {
+        result.textContent = '✅ Valid URL!';
+        result.className = 'result success';
+      } else {
+        result.textContent = `❌ Invalid URL. Make sure it includes hash={${param}}.`;
+        result.className = 'result error';
+      }
+    }
+  </script>
+</body>
+</html>
